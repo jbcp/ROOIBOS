@@ -11,96 +11,108 @@ public class MyRadioPanel extends JPanel implements ActionListener {
     final String[] groupName = {"A", "B", "C", "D", "E"};//, "F", "G", "H", "I", "J"};
     private String[] selectedValueArr;
     private int width0 = 55;
-    private int width1;
+ //   private int width1  =150;
     private ButtonGroup[] buttonGroups;
     private JTable table;
+    private int start, end, group;
+
 
     public MyRadioPanel() {
-        makeTable(1, 20, 1);
-      //  getRadioPanel();
-        // setRadioPanel(1,20,1);
+        start = 1;
+        end = 20;
+        group = 1;
+
+        this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
+        this.add(new JScrollPane(table));
+        setVisible(true);
     }
 
-    public MyRadioPanel(int start, int end, int groupNum) {
-
-        makeTable(start, end, groupNum);   // setRadioPanel(start, end, groupNum);
-        // setRadioPanel(1,20,1);
+    public MyRadioPanel(int startNum, int endNum, int groupNum, String[] select) {
+        this.start = startNum;
+        this.end = endNum;
+        this.group = groupNum;
+        selectedValueArr = select;
+        makeTable(start, end, group, select);
+        this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
+        this.add(new JScrollPane(table));
+       
+        setVisible(true);
     }
-    // String[] selectedValuesArr;
-//    int selectedRow = -1;
 
-//    public boolean selectedValuesArr(String s) {
-//        try {
-//            if (selectedRow >= 0) {
-//                this.selectedValuesArr[selectedRow] = s;
-//                selectedRow = -1;
-//                return true;
-//            } else {
-//                return false;
-//            }
-//        } catch (Exception e) {
-//            return false;
-//        }
-//    }
-    public void setColumnWidth(int col, int width) {
-
+    public void setStart(int start) {
+        this.start = start;
     }
-public String[] getSelectedValues(){
-// System.out.println(buttonGroups[0]+"\t"+buttonGroups[0].getSelection().isSelected());
-     selectedValueArr = new String[buttonGroups.length];
-                for (int k = 0; k < buttonGroups.length; k++) {
 
-                    String s = getSelectedButtonText(buttonGroups[k]);
-                    //   System.out.println(k + "-->" + s);
-                    selectedValueArr[k] = s;
-                }
-                
-//                  System.out.println("----"+selectedValueArr[0]);
-//        if (selectedValueArr == null) {
-//            selectedValueArr = new String[]{"A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A"};
-//        }
-// 
-    //    System.out.println("----"+selectedValueArr[0]);
+    public void setEnd(int end) {
+        this.end = end;
+    }
+
+    public void setGroup(int group) {
+        this.group = group;
+    }
+    
+    public String[] getSelectedValues() {
+        selectedValueArr = new String[end + 1];
+
+        for (int k = 0; k < buttonGroups.length; k++) {
+            String s = getSelectedButtonText(buttonGroups[k]);    
+            selectedValueArr[k + start] = s;
+        }
+
         return selectedValueArr;
-  
-}
-    public DefaultTableModel makeModel(int start, int end, int groupNum) {
-        width1 = 35 * groupNum;
+
+    }
+
+
+    public DefaultTableModel makeModel(int start, int end, int groupNum, String[] selectedArr) {
+        //width1 = 35 * groupNum;
 
         int pNum = end - start + 1;
 
-        buttonGroups = new ButtonGroup[pNum];
+        buttonGroups = new ButtonGroup[pNum];//buttonGroup[subject]
         Object[][] data = new Object[pNum][2];
 
         for (int i = 0; i < pNum; i++) {
             String s = "" + (i + start);
-            //  System.out.println("\ts=" + s);
+ //  System.out.println("\ts=" + s);
             data[i][0] = s;
             JPanel jp = new JPanel();
-            //    jp.setOpaque(true);
             jp.setLayout(new GridBagLayout());
             GridBagConstraints c = new GridBagConstraints();
-            //  if (shouldFill) {
-            //natural height, maximum width
             c.fill = GridBagConstraints.HORIZONTAL;
-//}
 
             ButtonGroup gr = new ButtonGroup();
             JRadioButton[] rButtons = new JRadioButton[groupNum];
-            // selectedValuesArr[i] = "A";
+            // if (selectedArr != null &&(i + start) < selectedArr.length && selectedArr[i+start]==null)= "A";
+
             for (int j = 0; j < groupNum; j++) {
                 rButtons[j] = new JRadioButton(groupName[j]);
-                if (j == 0) {
-                    rButtons[j].setSelected(true);
 
-                    //  rButtons[j].setBorder(null);
-                    //rButtons[j].setBorderPainted(false);
-                    //rButtons[j].setMargin(new Insets(2,20,2,20));
-                }
+        
+                    if (selectedArr != null) {
+                         
+                        if ((i + start) < selectedArr.length) {
+//  System.out.println(i+"]["+j+"------------selectedAr-----["+(i+start) +"]="+selectedArr[i + start]);
+                            if (selectedArr[i + start] != null) {
+                                if (groupName[j].equals(selectedArr[i + start])) {
+                                    rButtons[j].setSelected(true);
+                                }
+                            } 
+                         
+                           else  rButtons[0].setSelected(true);
+                    //   System.out.println(i+"]["+j+"-----------------"+(i+start) +" length="+selectedArr.length);
+                        }
+                         else  rButtons[0].setSelected(true);
+                       // System.out.println(i+"]["+j+"-----------------"+(i+start) +" length="+selectedArr.length);
+
+                    }                                    
+                    else rButtons[0].setSelected(true);
+                        
+
                 rButtons[j].addActionListener(this);
                 c.gridx = j;
                 c.gridy = 0;
-                c.insets = new Insets(0, 10, 0, 10);
+                c.insets = new Insets(0, 15, 0, 15);
                 gr.add(rButtons[j]);
                 jp.add(rButtons[j], c);
                 // jp.add(new JRadioButton(h[j]));
@@ -108,13 +120,20 @@ public String[] getSelectedValues(){
                 //  data[i][j+1] =rButtons[j];
 
             }
-            //  P[i]=jp;
-            // bGroup[i] = gr;
+
+            // buttonGroups[i+start] = gr;
             buttonGroups[i] = gr;
             data[i][1] = jp;
-            //     System.out.println("\tdata [" + i + "]" + "[1]=" + jp.getComponentCount());
+//            if(selectedArr!=null){
+//             for (int q = 0; q < selectedArr.length; q++) {
+//                 System.out.println(q+"---inradio---?"+selectedArr[q]);
+//             }
+//            }
+
         }
-        DefaultTableModel model = new DefaultTableModel(data, new Object[]{"대상자", "그룹"}) {
+        //DefaultTableModel model = new DefaultTableModel(data, new Object[]{"대상자", "그룹"}) {
+                DefaultTableModel model = new DefaultTableModel(data, new Object[]{"Subject", "Group"}) {
+
             public Class getColumnClass(int column) {
                 if (column == 1) {
                     return JPanel.class;
@@ -122,42 +141,42 @@ public String[] getSelectedValues(){
                     return String.class;
                 }
             }
-    public boolean isCellEditable(int row, int column) {
-       //all cells false
-       if (column == 0) {
+
+            public boolean isCellEditable(int row, int column) {
+                //all cells false
+                if (column == 0) {
                     return false;
-                } 
-       return true;
-    }
+                }
+                return true;
+            }
         };
 
         return model;
     }
 
-    public void makeTable(int start, int end, int groupNum) {
+    public void makeTable(int start, int end, int groupNum, String[] arr) {
 
-        table = new JTable(makeModel(start, end, groupNum)) {
+        table = new JTable(makeModel(start, end, groupNum, arr)) {
             public void tableChanged(TableModelEvent e) {
                 super.tableChanged(e);
                 repaint();
             }
         };
-
+        //  }
         TableColumnModel columnModel = table.getColumnModel();
         columnModel.getColumn(0).setPreferredWidth(width0);
        // columnModel.getColumn(0)..isCellEditable(false) ;
 
         //   columnModel.getColumn(0).setMinWidth(20);
         columnModel.getColumn(0).setMaxWidth(width0);
-        width1 = 30 * groupNum;
+       // width1 = 30 * groupNum;
         // System.out.println(groupNum + "width1" + width1);
-        columnModel.getColumn(1).setPreferredWidth(width1);
+        //  columnModel.getColumn(1).setPreferredWidth(width1);
 
-        table.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
+        // table.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
 //        System.out.println("table row="+table.getRowCount());
 //        for(int j=0; j<table.getRowCount();j++)
 //       System.out.println(j+"--->"+table.getModel().getValueAt(j,0));
-
         TableColumn column = columnModel.getColumn(1);
 
         JCheckBoxRenderer renderer = new JCheckBoxRenderer(new JCheckBox());
@@ -170,7 +189,6 @@ public String[] getSelectedValues(){
             @Override
             public Component getTableCellRendererComponent(JTable table,
                     Object value, boolean isSelected, boolean hasFocus, int row, int col) {
-              
 
                 if (col == 0) {
                     super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);
@@ -181,11 +199,9 @@ public String[] getSelectedValues(){
                             setBackground(new Color(242, 242, 242));
                         } else {
                             setBackground(Color.white);
-                        }            
-
+                        }
                     }
                 }
-
                 return this;
             }
 
@@ -201,58 +217,16 @@ public String[] getSelectedValues(){
         header.setDefaultRenderer(headerRenderer);
         headerRenderer.setHorizontalAlignment(JLabel.CENTER);
 
-        //Get the status for the current row.
-//        JButton jb = new JButton("확인");
-//        jb.addActionListener(new ActionListener() {
-//
-//            public void actionPerformed(ActionEvent e) {
-//                //Execute when button is pressed
-//                System.out.println("You clicked the button");
-//                 
-//                setSelectedValueArr();
-//                
-//            }
-//
-//            private void setSelectedValueArr() {
-//                selectedValueArr=new String[buttonGroups.length];
-//             for (int k = 0; k < buttonGroups.length; k++) {
-//                 
-//                        String s = getSelectedButtonText(buttonGroups[k]);
-//                        System.out.println(k + "-->" + s);
-//                        selectedValueArr[k]=s;
-//                  }      
-//            
-//            }
-//        });
-        // JPanel jp = new JPanel();
-    }
-
-    public JPanel getRadioPanel() {
-
-        this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
-        this.add(new JScrollPane(table));
-        //     this.setOpaque(true);
-        //        setBackground(Color.BLACK);  
-        this.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-      //     this.add(jb);
-        // getContentPane().add(jp);
-
-        //getContentPane().add(jb);
-        //   setLocationRelativeTo(null);
-        //  setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setVisible(true);
-        // setMyPanelSize(600,600);
-        return this;
     }
 
     public void setMyPanelSize(int x, int y) {
         this.setSize(x, y);
     }
 
-    public void repaint() {
+    public void repaint(int start, int end, int groupNum, String[] selectedValues) {
 
         if (table != null) {
-            //Component c = this.getComponent(0);
+            table.setModel(makeModel(start, end, groupNum, selectedValues));       //Component c = this.getComponent(0);
             table.repaint();
         }
     }
@@ -265,9 +239,10 @@ public String[] getSelectedValues(){
 
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                MyRadioPanel test = new MyRadioPanel();
+                String[] arr = {"A"};
+                MyRadioPanel test = new MyRadioPanel(2, 20, 1, arr);
                 JFrame jf = new JFrame();
-                jf.add(test.getRadioPanel());
+                //  jf.add(test.getRadioPanel());
                 jf.setVisible(true);
                 jf.setSize(600, 600);
                 //   setLocationRelativeTo(null);
@@ -278,7 +253,9 @@ public String[] getSelectedValues(){
     }
 
     public String getSelectedButtonText(ButtonGroup buttonGroup) {
+        // for (Enumeration<AbstractButton> buttons = buttonGroup.getElements(); buttons.hasMoreElements();) {
         for (Enumeration<AbstractButton> buttons = buttonGroup.getElements(); buttons.hasMoreElements();) {
+
             AbstractButton button = buttons.nextElement();
 
             if (button.isSelected()) {
@@ -292,13 +269,19 @@ public String[] getSelectedValues(){
     @Override// radiobutton actions
     public void actionPerformed(ActionEvent e) {
 
-     //   System.out.println("actionPerformed\t" + e.getActionCommand());
+        //   System.out.println("actionPerformed\t" + e.getActionCommand());
         //  System.out.println("actionPerformed\t" + e.getSource());
-
-   //     AbstractButton aButton = (AbstractButton) e.getSource();
-      //  System.out.println("Selected: " + aButton.getText());
+        //     AbstractButton aButton = (AbstractButton) e.getSource();
+        //  System.out.println("Selected: " + aButton.getText());
 //        selectedValuesArr(aButton.getText());
+    }
 
+    int getStart() {
+        return start;
+    }
+
+    int getEnd() {
+        return end;
     }
 
     class JCheckBoxRenderer extends DefaultCellEditor
@@ -314,7 +297,7 @@ public String[] getSelectedValues(){
         public void setSelectedIndex(int index) {
             for (int i = 0; i < buttons.length; i++) {
                 buttons[i].setSelected(i == index);
-  //   System.out.println("in setSelected Index----" + buttons[i].getSelectedIcon());
+                //   System.out.println("in setSelected Index----" + buttons[i].getSelectedIcon());
             }
         }
 
@@ -326,7 +309,7 @@ public String[] getSelectedValues(){
 
             }
             if (value instanceof JPanel) {
-              //  System.out.println(row + "   JPanel in getTableCellRendererComponent     " + column);
+                //  System.out.println(row + "   JPanel in getTableCellRendererComponent     " + column);
                 JPanel jp = (JPanel) value;
                 if (row % 2 == 1) {
                     jp.setBackground(new Color(242, 242, 242));
