@@ -175,13 +175,13 @@ public class Player {
 
     void playCounting() {
 
-        String[] cnt = {"55", "56", "57", "58", "59", "00"};
+        String[] cnt = {"54","55", "56", "57", "58", "59", "00"};
 
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                if (count >= 6) {
+                if (count >6) {
                     //   System.out.println("cancle count==5");
                     this.cancel();
                     //    this.purge();
