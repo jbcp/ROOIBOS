@@ -14,6 +14,7 @@ Rooibos™ 은 대상자에게 수행되는 시험이 정확한 시간에 시행
 ## Installation
 + install netbean with java 1.8
 + link external JARs(commons-net-3.6.jar, jxl.jar in a lib folder ) at netbean
++ run after clean and build 
 
 ## Pics
 ![Rooibos1](/rooibos.jpg)
