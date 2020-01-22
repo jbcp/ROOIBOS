@@ -16,5 +16,5 @@ Rooibos™ 은 대상자에게 수행되는 시험이 정확한 시간에 시행
 + link external JARs(commons-net-3.6.jar, jxl.jar in a lib folder ) at netbean
 
 ## Pics
-![Rooibos1](/rooibos1.png)
+![Rooibos1](/rooibos.jpg)
 
