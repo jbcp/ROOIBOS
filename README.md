@@ -19,3 +19,5 @@ Rooibos™ 은 대상자에게 수행되는 시험이 정확한 시간에 시행
 ## Pics
 ![Rooibos1](/rooibos.jpg)
 
+## Contact to developer(s)
+Jhyoung lee - jhlee@jbcp.kr
